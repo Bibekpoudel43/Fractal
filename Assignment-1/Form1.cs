@@ -34,8 +34,8 @@ namespace Assignment_1
         //fires when form is loaded
         private void Form_Load(object sender, EventArgs e)
         {
-            init();
-            start();
+            init(); //load initial value
+            start(); //load mandelbrot on a picturebox
         }
 
         private void pictureBox_Paint(object sender, PaintEventArgs e)
