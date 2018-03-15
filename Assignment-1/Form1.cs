@@ -29,6 +29,7 @@ namespace Assignment_1
         private Image picture;
         private Graphics g1;
         private Cursor c1, c2;
+
         private ToHSB HSBcol = new ToHSB();
 
         //fires when form is loaded
@@ -132,8 +133,9 @@ namespace Assignment_1
         {
             if (action)
             {
-                xstart = e.X;
-                ystart = e.Y;
+                xs = e.X;
+                ys = e.Y;
+                rectangle = true;
             }
         }
 
@@ -184,9 +186,9 @@ namespace Assignment_1
                 }
                 xzoom = (xende - xstart) / (double)x1;
                 yzoom = (yende - ystart) / (double)y1;
-                mandelbrot();
                 rectangle = false;
-                //repaint();
+                mandelbrot();
+
             }
         }
 
