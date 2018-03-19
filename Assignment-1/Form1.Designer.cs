@@ -78,19 +78,20 @@
             // saveAsImageToolStripMenuItem
             // 
             this.saveAsImageToolStripMenuItem.Name = "saveAsImageToolStripMenuItem";
-            this.saveAsImageToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.saveAsImageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveAsImageToolStripMenuItem.Text = "Save as Image";
+            this.saveAsImageToolStripMenuItem.Click += new System.EventHandler(this.saveAsImageToolStripMenuItem_Click);
             // 
             // saveAsStateToolStripMenuItem
             // 
             this.saveAsStateToolStripMenuItem.Name = "saveAsStateToolStripMenuItem";
-            this.saveAsStateToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.saveAsStateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveAsStateToolStripMenuItem.Text = "Save as State";
             // 
             // loadStateToolStripMenuItem
             // 
             this.loadStateToolStripMenuItem.Name = "loadStateToolStripMenuItem";
-            this.loadStateToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.loadStateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.loadStateToolStripMenuItem.Text = "Load State";
             // 
             // exitToolStripMenuItem

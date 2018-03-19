@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing.Imaging;
 
 namespace Assignment_1
 {
@@ -15,6 +16,8 @@ namespace Assignment_1
         public Form()
         {
             InitializeComponent();
+
+
         }
 
         private  int MAX = 256;      // max iterations
@@ -29,7 +32,6 @@ namespace Assignment_1
         private Image picture;
         private Graphics g1;
         private Cursor c1, c2;
-
         private ToHSB HSBcol = new ToHSB();
 
         //fires when form is loaded
@@ -43,6 +45,7 @@ namespace Assignment_1
         {
             Graphics graphics = e.Graphics;
             graphics.DrawImage(picture, 0, 0);
+
         }
 
         private void initvalues() // reset start values
@@ -67,7 +70,7 @@ namespace Assignment_1
             y1 = pictureBox.Size.Height;
             xy = (float)x1 / (float)y1;
             picture = new Bitmap(x1,y1);
-            g1 = Graphics.FromImage(picture);
+            g1 = Graphics.FromImage(picture); 
             finished = true;
         }
 
@@ -109,20 +112,22 @@ namespace Assignment_1
             pictureBox.Cursor = c1;
             statusBar.Text = ("Mandelbrot-Set will be produced - please wait...");
             for (x = 0; x < x1; x += 2)
+            {
                 for (y = 0; y < y1; y++)
                 {
                     h = pointcolour(xstart + xzoom * (double)x, ystart + yzoom * (double)y); // color value
                     if (h != alt)
                     {
-                        b = 1.0f - h * h; 
+                        b = 1.0f - h * h;
                         //calling method of ToHSB class(passing value into)                   
                         col = ToHSB.HSBtoRGB(h, 0.8f, b);
                         pn = new Pen(col);
                         //djm 
                         alt = h;
                     }
-                    g1.DrawLine(pn,x, y, x + 1, y);
+                    g1.DrawLine(pn, x, y, x + 1, y);
                 }
+            }
             statusBar.Text = ("Mandelbrot-Set ready - please select zoom area with pressed mouse.");
             pictureBox.Cursor = c2;
             action = true;
@@ -149,7 +154,9 @@ namespace Assignment_1
 
                 Graphics g = pictureBox.CreateGraphics();
                 update(g);
+               
             }
+
         }
 
         //fires when we release the pressed mouse 
@@ -186,16 +193,18 @@ namespace Assignment_1
                 }
                 xzoom = (xende - xstart) / (double)x1;
                 yzoom = (yende - ystart) / (double)y1;
-                rectangle = false;
                 mandelbrot();
+                rectangle = false;
+                
+                
 
             }
         }
 
-        //
+        //for drawing rectangle to the selected area
         public void update(Graphics g)
         {
-            Pen pen = new Pen(Color.White, 2);
+            Pen pen = new Pen(Color.White);
             g.DrawImage(picture, 0, 0);
             if (rectangle)
             {
@@ -210,8 +219,53 @@ namespace Assignment_1
                     if (ys < ye) g.DrawRectangle(pen, xe, ys, (xs - xe), (ye - ys));
                     else g.DrawRectangle(pen, xe, ye, (xs - xe), (ys - ye));
                 }
+
+            }
+
+        }
+
+
+        private void saveAsImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Displays a SaveFileDialog so the user can save the Image    
+            SaveFileDialog sf = new SaveFileDialog();
+            sf.Filter = "JPeg|*.jpg|Bitmap|*.bmp|Gif|*.gif |Png|*.png";
+            sf.Title = "Save an Image File";
+            sf.ShowDialog();
+
+            // If the file name is not an empty string open it for saving.  
+            if (sf.FileName != "")
+            {
+                // Saves the Image via a FileStream created by the OpenFile method.  
+                System.IO.FileStream fs =
+                   (System.IO.FileStream)sf.OpenFile();
+                // Saves the Image in the appropriate ImageFormat based upon the  
+                // File type selected in the dialog box.  
+                // NOTE that the FilterIndex property is one-based.  
+                switch (sf.FilterIndex)
+                {
+                    case 1:
+                        picture.Save(fs, ImageFormat.Jpeg);
+                        break;
+
+                    case 2:
+                        picture.Save(fs, ImageFormat.Bmp);
+                        break;
+
+                    case 3:
+                        picture.Save(fs, ImageFormat.Gif);
+                        break;
+
+                    case 4:
+                        picture.Save(fs, ImageFormat.Png);
+                        break;
+                }
+
+                fs.Close();
             }
         }
+
+
 
 
     }
