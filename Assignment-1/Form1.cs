@@ -31,8 +31,9 @@ namespace Assignment_1
         private ToHSB HSBcol = new ToHSB();
         Random rn = new Random();
         Color[] colorPic = new Color[6];
+        private bool isLaunched = true;
         String[] settings = new String[4];
-       
+
 
         private bool clicked = false;
 
@@ -75,10 +76,13 @@ namespace Assignment_1
         private String[] ReadFromFile()
         {
             StreamReader sr = new StreamReader(@"C:\Users\Bibek\Documents\Visual Studio 2015\Projects\Assignment-1\Fractal\Assignment-1\state\state.txt");
-                settings[0] = sr.ReadLine();
-                settings[1] = sr.ReadLine();
-                settings[2] = sr.ReadLine();
-                settings[3] = sr.ReadLine();
+            String line = "";
+            String tempStrore = "";
+            while ((line = sr.ReadLine()) != null)
+            {
+                tempStrore += (line + ",");
+            }
+            settings = tempStrore.Split(',');
             sr.Close();
             return settings;
         }
@@ -93,15 +97,15 @@ namespace Assignment_1
 
         private void initvalues() // reset start values
         {
-            string[] settings = ReadFromFile();
-             bool isLaunched = false;
+            string[] set = ReadFromFile();
 
             if(isLaunched)
             {
-                xstart = Convert.ToDouble(settings[0]);
-                ystart = Convert.ToDouble(settings[1]);
-                xende = Convert.ToDouble(settings[2]);
-                yende = Convert.ToDouble(settings[3]);
+                isLaunched = false;
+                xstart = Convert.ToDouble(set[0]);
+                ystart = Convert.ToDouble(set[1]);
+                xende = Convert.ToDouble(set[2]);
+                yende = Convert.ToDouble(set[3]);
             } else
             {
                 xstart = SX;
