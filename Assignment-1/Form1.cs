@@ -8,23 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace Assignment_1
 {
     public partial class Form : System.Windows.Forms.Form
     {
-        public Form()
-        {
-            InitializeComponent();
 
-
-        }
-
-        private  int MAX = 256;      // max iterations
-        private  double SX = -2.025; // start value real
-        private  double SY = -1.125; // start value imaginary
-        private  double EX = 0.6;    // end value real
-        private  double EY = 1.125;  // end value imaginary
+        private int MAX = 256;      // max iterations
+        private double SX = -2.025; // start value real
+        private double SY = -1.125; // start value imaginary
+        private double EX = 0.6;    // end value real
+        private double EY = 1.125;  // end value imaginary
         private static int x1, y1, xs, ys, xe, ye;
         private static double xstart, ystart, xende, yende, xzoom, yzoom;
         private static bool action, rectangle, finished;
@@ -32,15 +27,63 @@ namespace Assignment_1
         private Image picture;
         private Graphics g1;
         private Cursor c1, c2;
+        private bool cndnColor;
         private ToHSB HSBcol = new ToHSB();
+        Random rn = new Random();
+        Color[] colorPic = new Color[6];
+        String[] settings = new String[4];
+       
 
+        private bool clicked = false;
+
+        public Form()
+        {
+            InitializeComponent();
+            this.DoubleBuffered = true;
+
+        }
         //fires when form is loaded
         private void Form_Load(object sender, EventArgs e)
         {
             init(); //load initial value
+            storeColor();
             start(); //load mandelbrot on a pictureBox
         }
+        
+        //fires when user click on exit button
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WriteToFile();
+            Close();
+        }
 
+
+        //takes the coordinate and write it to the file
+        //state save
+        private void WriteToFile()
+        {
+            StreamWriter sw = new StreamWriter(@"C:\Users\Bibek\Documents\Visual Studio 2015\Projects\Assignment-1\Fractal\Assignment-1\state\state.txt");
+            sw.WriteLine(xstart);
+            sw.WriteLine(ystart);
+            sw.WriteLine(xende);
+            sw.WriteLine(yende);
+            sw.Close();
+        }
+
+        //read the coordinate from the file
+        //state load
+        private String[] ReadFromFile()
+        {
+            StreamReader sr = new StreamReader(@"C:\Users\Bibek\Documents\Visual Studio 2015\Projects\Assignment-1\Fractal\Assignment-1\state\state.txt");
+                settings[0] = sr.ReadLine();
+                settings[1] = sr.ReadLine();
+                settings[2] = sr.ReadLine();
+                settings[3] = sr.ReadLine();
+            sr.Close();
+            return settings;
+        }
+
+        //paint on the graphics of the picturebox
         private void pictureBox_Paint(object sender, PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
@@ -50,12 +93,25 @@ namespace Assignment_1
 
         private void initvalues() // reset start values
         {
-            xstart = SX;
-            ystart = SY;
-            xende = EX;
-            yende = EY;
-            if ((float)((xende - xstart) / (yende - ystart)) != xy)
-                xstart = xende - (yende - ystart) * (double)xy;
+            string[] settings = ReadFromFile();
+             bool isLaunched = false;
+
+            if(isLaunched)
+            {
+                xstart = Convert.ToDouble(settings[0]);
+                ystart = Convert.ToDouble(settings[1]);
+                xende = Convert.ToDouble(settings[2]);
+                yende = Convert.ToDouble(settings[3]);
+            } else
+            {
+                xstart = SX;
+                ystart = SY;
+                xende = EX;
+                yende = EY;
+                if ((float)((xende - xstart) / (yende - ystart)) != xy)
+                    xstart = xende - (yende - ystart) * (double)xy;
+            }
+        
         }
 
 
@@ -69,8 +125,8 @@ namespace Assignment_1
             x1 = pictureBox.Size.Width;
             y1 = pictureBox.Size.Height;
             xy = (float)x1 / (float)y1;
-            picture = new Bitmap(x1,y1);
-            g1 = Graphics.FromImage(picture); 
+            picture = new Bitmap(x1, y1);
+            g1 = Graphics.FromImage(picture);
             finished = true;
         }
 
@@ -100,12 +156,12 @@ namespace Assignment_1
             return (float)j / (float)MAX;
         }
 
-        
+
         private void mandelbrot() // calculate all points
         {
             int x, y;
-            float h, b, alt = 0.0f;
-            Pen pn=null;
+            float h, b, alt = 0.0f, c;
+            Pen pn = null;
             Color col;
 
             action = false;
@@ -120,7 +176,7 @@ namespace Assignment_1
                     {
                         b = 1.0f - h * h;
                         //calling method of ToHSB class(passing value into)                   
-                        col = ToHSB.HSBtoRGB(h, 0.8f, b);
+                        col = ToHSB.HSBtoRGB(h, 0.8f, b, colorPic);
                         pn = new Pen(col);
                         //djm 
                         alt = h;
@@ -147,21 +203,20 @@ namespace Assignment_1
         //fires when we drag the mouse 
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (action)
-            {
-                xe = e.X;
-                ye = e.Y;
-
+                if (action)
+                {
+                    xe = e.X;
+                    ye = e.Y;
+                    
+                }
                 Graphics g = pictureBox.CreateGraphics();
-                update(g);
-               
-            }
-
+                update(g);     
         }
 
         //fires when we release the pressed mouse 
         private void pictureBox_MouseUp(object sender, MouseEventArgs e)
         {
+            clicked = false;
             int z, w;
             if (action)
             {
@@ -195,8 +250,8 @@ namespace Assignment_1
                 yzoom = (yende - ystart) / (double)y1;
                 mandelbrot();
                 rectangle = false;
-                
-                
+
+
 
             }
         }
@@ -208,7 +263,7 @@ namespace Assignment_1
             g.DrawImage(picture, 0, 0);
             if (rectangle)
             {
-                
+
                 if (xs < xe)
                 {
                     if (ys < ye) g.DrawRectangle(pen, xs, ys, (xe - xs), (ye - ys));
@@ -239,7 +294,7 @@ namespace Assignment_1
                 // Saves the Image via a FileStream created by the OpenFile method.  
                 System.IO.FileStream fs =
                    (System.IO.FileStream)sf.OpenFile();
-                // Saves the Image in the appropriate ImageFormat based upon the  
+                // Saves the Image in the appropriate ImageFormat based upon 
                 // File type selected in the dialog box.  
                 // NOTE that the FilterIndex property is one-based.  
                 switch (sf.FilterIndex)
@@ -266,7 +321,39 @@ namespace Assignment_1
         }
 
 
+        //fires when the user click the change color submenu
+        private void changeColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            storeColor();
+            mandelbrot();
+        }
 
+        //generate random color and store in an array
+        private void storeColor()
+        {
+            //default
+            if (!cndnColor)
+            {
+                colorPic[0] = Color.FromArgb(255, 255, 255);
+                colorPic[1] = Color.FromArgb(255, 255, 255);
+                colorPic[2] = Color.FromArgb(255, 255, 255);
+                colorPic[3] = Color.FromArgb(255, 255, 255);
+                colorPic[4] = Color.FromArgb(255, 255, 255);
+                colorPic[5] = Color.FromArgb(255, 255, 255);
+                cndnColor = true;
+            }
+            else
+            {
+                colorPic[0] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
+                colorPic[1] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
+                colorPic[2] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
+                colorPic[3] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
+                colorPic[4] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
+                colorPic[5] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
+            }
+        
+
+            }
+        }
 
     }
-}
