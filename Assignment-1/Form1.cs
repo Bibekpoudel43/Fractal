@@ -41,7 +41,6 @@ namespace Assignment_1
         {
             InitializeComponent();
             this.DoubleBuffered = true;
-
         }
         //fires when form is loaded
         private void Form_Load(object sender, EventArgs e)
@@ -49,42 +48,6 @@ namespace Assignment_1
             init(); //load initial value
             storeColor();
             start(); //load mandelbrot on a pictureBox
-        }
-        
-        //fires when user click on exit button
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            WriteToFile();
-            Close();
-        }
-
-
-        //takes the coordinate and write it to the file
-        //state save
-        private void WriteToFile()
-        {
-            StreamWriter sw = new StreamWriter(@"C:\Users\Bibek\Documents\Visual Studio 2015\Projects\Assignment-1\Fractal\Assignment-1\state\state.txt");
-            sw.WriteLine(xstart);
-            sw.WriteLine(ystart);
-            sw.WriteLine(xende);
-            sw.WriteLine(yende);
-            sw.Close();
-        }
-
-        //read the coordinate from the file
-        //state load
-        private String[] ReadFromFile()
-        {
-            StreamReader sr = new StreamReader(@"C:\Users\Bibek\Documents\Visual Studio 2015\Projects\Assignment-1\Fractal\Assignment-1\state\state.txt");
-            String line = "";
-            String tempStrore = "";
-            while ((line = sr.ReadLine()) != null)
-            {
-                tempStrore += (line + ",");
-            }
-            settings = tempStrore.Split(',');
-            sr.Close();
-            return settings;
         }
 
         //paint on the graphics of the picturebox
@@ -95,29 +58,16 @@ namespace Assignment_1
 
         }
 
+  
         private void initvalues() // reset start values
         {
-            string[] set = ReadFromFile();
-
-            if(isLaunched)
-            {
-                isLaunched = false;
-                xstart = Convert.ToDouble(set[0]);
-                ystart = Convert.ToDouble(set[1]);
-                xende = Convert.ToDouble(set[2]);
-                yende = Convert.ToDouble(set[3]);
-            } else
-            {
                 xstart = SX;
                 ystart = SY;
                 xende = EX;
                 yende = EY;
                 if ((float)((xende - xstart) / (yende - ystart)) != xy)
-                    xstart = xende - (yende - ystart) * (double)xy;
-            }
-        
+                    xstart = xende - (yende - ystart) * (double)xy;  
         }
-
 
         // Load when the form loads
         //all instances will be prepared
@@ -210,8 +160,7 @@ namespace Assignment_1
                 if (action)
                 {
                     xe = e.X;
-                    ye = e.Y;
-                    
+                    ye = e.Y;                   
                 }
                 Graphics g = pictureBox.CreateGraphics();
                 update(g);     
@@ -296,8 +245,8 @@ namespace Assignment_1
             if (sf.FileName != "")
             {
                 // Saves the Image via a FileStream created by the OpenFile method.  
-                System.IO.FileStream fs =
-                   (System.IO.FileStream)sf.OpenFile();
+                FileStream fs =
+                   (FileStream)sf.OpenFile();
                 // Saves the Image in the appropriate ImageFormat based upon 
                 // File type selected in the dialog box.  
                 // NOTE that the FilterIndex property is one-based.  
@@ -358,6 +307,95 @@ namespace Assignment_1
         
 
             }
+
+
+
+        //fires when user click on exit button
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WriteToFile();
+            Close();
         }
 
+
+        //takes the coordinate and write it to the file
+        //state save function
+        private void WriteToFile()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Text File|*.txt";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                FileStream fs = (FileStream)sfd.OpenFile();
+                StreamWriter sw = new StreamWriter(fs);
+                sw.WriteLine(xstart);
+                sw.WriteLine(ystart);
+                sw.WriteLine(xende);
+                sw.WriteLine(yende);
+                sw.WriteLine(x1);
+                sw.WriteLine(y1);
+                sw.WriteLine(xzoom);
+                sw.WriteLine(yzoom);
+                sw.Close();
+            }
+
+        }
+
+        //read the coordinate from the file
+        //state load function
+        private String[] ReadFromFile()
+        {
+            String line = "";
+            String tempStrore = "";
+            OpenFileDialog od = new OpenFileDialog();
+            od.Title = "Open File";
+            // Show the Dialog.  
+            // If the user clicked OK in the dialog and  
+            if (od.ShowDialog() == DialogResult.OK)
+            {
+               FileStream fs =(FileStream)od.OpenFile();
+                StreamReader sr = new StreamReader(fs);
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        tempStrore += (line + ",");
+                    }
+                    settings = tempStrore.Split(',');
+                    sr.Close();
+            }
+            
+            return settings;
+        }
+
+        //state save submenu
+        //fires when the save state submenu is clicked
+        private void saveState(object sender, EventArgs e)
+        {
+            WriteToFile();
+        }
+
+        //state load submenu
+        //fires when the load state submenu is clicked
+        private void loadState(object sender, EventArgs e)
+        {
+            string[] set = ReadFromFile();
+                xstart = Convert.ToDouble(set[0]);
+                ystart = Convert.ToDouble(set[1]);
+                xende = Convert.ToDouble(set[2]);
+                yende = Convert.ToDouble(set[3]);
+                x1 = Convert.ToInt32(set[4]);
+                y1 = Convert.ToInt32(set[5]);
+               xzoom = Convert.ToDouble(set[6]);
+                yzoom = Convert.ToDouble(set[7]);
+            mandelbrot();
+        }
+
+        //color cycling function
+        private void Color_Cycle(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
+
+}
