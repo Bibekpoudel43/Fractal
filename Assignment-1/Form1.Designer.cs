@@ -28,18 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.animateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusBar = new System.Windows.Forms.ToolStripStatusLabel();
-            this.saveStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.animateStopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -49,7 +52,7 @@
             // 
             this.pictureBox.Location = new System.Drawing.Point(0, 24);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(619, 410);
+            this.pictureBox.Size = new System.Drawing.Size(694, 410);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             this.pictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox_Paint);
@@ -65,7 +68,7 @@
             this.exitToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(619, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(694, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -82,15 +85,30 @@
             // saveAsImageToolStripMenuItem
             // 
             this.saveAsImageToolStripMenuItem.Name = "saveAsImageToolStripMenuItem";
-            this.saveAsImageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsImageToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.saveAsImageToolStripMenuItem.Text = "Save as Image";
             this.saveAsImageToolStripMenuItem.Click += new System.EventHandler(this.saveAsImageToolStripMenuItem_Click);
+            // 
+            // saveStateToolStripMenuItem
+            // 
+            this.saveStateToolStripMenuItem.Name = "saveStateToolStripMenuItem";
+            this.saveStateToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.saveStateToolStripMenuItem.Text = "Save State";
+            this.saveStateToolStripMenuItem.Click += new System.EventHandler(this.saveState);
+            // 
+            // loadStateToolStripMenuItem
+            // 
+            this.loadStateToolStripMenuItem.Name = "loadStateToolStripMenuItem";
+            this.loadStateToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.loadStateToolStripMenuItem.Text = "Load State";
+            this.loadStateToolStripMenuItem.Click += new System.EventHandler(this.loadState);
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.changeColorToolStripMenuItem,
-            this.animateToolStripMenuItem});
+            this.animateToolStripMenuItem,
+            this.animateStopToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -98,15 +116,15 @@
             // changeColorToolStripMenuItem
             // 
             this.changeColorToolStripMenuItem.Name = "changeColorToolStripMenuItem";
-            this.changeColorToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.changeColorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.changeColorToolStripMenuItem.Text = "Change color";
             this.changeColorToolStripMenuItem.Click += new System.EventHandler(this.changeColorToolStripMenuItem_Click);
             // 
             // animateToolStripMenuItem
             // 
             this.animateToolStripMenuItem.Name = "animateToolStripMenuItem";
-            this.animateToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.animateToolStripMenuItem.Text = "Animate";
+            this.animateToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.animateToolStripMenuItem.Text = "Start Animation";
             this.animateToolStripMenuItem.Click += new System.EventHandler(this.Color_Cycle);
             // 
             // exitToolStripMenuItem
@@ -120,9 +138,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 435);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 418);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(619, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(694, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -132,25 +150,23 @@
             this.statusBar.Size = new System.Drawing.Size(39, 17);
             this.statusBar.Text = "Status";
             // 
-            // saveStateToolStripMenuItem
+            // timer1
             // 
-            this.saveStateToolStripMenuItem.Name = "saveStateToolStripMenuItem";
-            this.saveStateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.saveStateToolStripMenuItem.Text = "Save State";
-            this.saveStateToolStripMenuItem.Click += new System.EventHandler(this.saveState);
+            this.timer1.Interval = 500;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // loadStateToolStripMenuItem
+            // animateStopToolStripMenuItem
             // 
-            this.loadStateToolStripMenuItem.Name = "loadStateToolStripMenuItem";
-            this.loadStateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.loadStateToolStripMenuItem.Text = "Load State";
-            this.loadStateToolStripMenuItem.Click += new System.EventHandler(this.loadState);
+            this.animateStopToolStripMenuItem.Name = "animateStopToolStripMenuItem";
+            this.animateStopToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.animateStopToolStripMenuItem.Text = "Stop Animation";
+            this.animateStopToolStripMenuItem.Click += new System.EventHandler(this.animateStopToolStripMenuItem_Click);
             // 
             // Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(619, 457);
+            this.ClientSize = new System.Drawing.Size(694, 440);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.menuStrip1);
@@ -182,6 +198,8 @@
         private System.Windows.Forms.ToolStripMenuItem animateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadStateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveStateToolStripMenuItem;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripMenuItem animateStopToolStripMenuItem;
     }
 }
 

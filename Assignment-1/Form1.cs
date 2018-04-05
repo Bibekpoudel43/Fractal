@@ -31,7 +31,6 @@ namespace Assignment_1
         private ToHSB HSBcol = new ToHSB();
         Random rn = new Random();
         Color[] colorPic = new Color[6];
-        private bool isLaunched = true;
         String[] settings = new String[4];
 
 
@@ -40,9 +39,8 @@ namespace Assignment_1
         public Form()
         {
             InitializeComponent();
-            this.DoubleBuffered = true;
         }
-        //fires when form is loaded
+
         private void Form_Load(object sender, EventArgs e)
         {
             init(); //load initial value
@@ -69,7 +67,6 @@ namespace Assignment_1
                     xstart = xende - (yende - ystart) * (double)xy;  
         }
 
-        // Load when the form loads
         //all instances will be prepared
         public void init()
         {
@@ -143,7 +140,6 @@ namespace Assignment_1
             action = true;
         }
 
-        //fires when we press the mouse
         private void pictureBox_MouseDown(object sender, MouseEventArgs e)
         {
             if (action)
@@ -154,7 +150,6 @@ namespace Assignment_1
             }
         }
 
-        //fires when we drag the mouse 
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
                 if (action)
@@ -166,7 +161,8 @@ namespace Assignment_1
                 update(g);     
         }
 
-        //fires when we release the pressed mouse 
+
+
         private void pictureBox_MouseUp(object sender, MouseEventArgs e)
         {
             clicked = false;
@@ -204,12 +200,9 @@ namespace Assignment_1
                 mandelbrot();
                 rectangle = false;
 
-
-
             }
         }
 
-        //for drawing rectangle to the selected area
         public void update(Graphics g)
         {
             Pen pen = new Pen(Color.White);
@@ -274,7 +267,6 @@ namespace Assignment_1
         }
 
 
-        //fires when the user click the change color submenu
         private void changeColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             storeColor();
@@ -305,18 +297,12 @@ namespace Assignment_1
                 colorPic[5] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
             }
         
-
             }
 
-
-
-        //fires when user click on exit button
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WriteToFile();
             Close();
         }
-
 
         //takes the coordinate and write it to the file
         //state save function
@@ -332,16 +318,31 @@ namespace Assignment_1
                 sw.WriteLine(ystart);
                 sw.WriteLine(xende);
                 sw.WriteLine(yende);
-                sw.WriteLine(x1);
-                sw.WriteLine(y1);
-                sw.WriteLine(xzoom);
-                sw.WriteLine(yzoom);
+                sw.WriteLine(colorPic[0].R);
+                sw.WriteLine(colorPic[0].G);
+                sw.WriteLine(colorPic[0].B);
+                sw.WriteLine(colorPic[1].R);
+                sw.WriteLine(colorPic[1].G);
+                sw.WriteLine(colorPic[1].B);
+                sw.WriteLine(colorPic[2].R);
+                sw.WriteLine(colorPic[2].G);
+                sw.WriteLine(colorPic[2].B);
+                sw.WriteLine(colorPic[3].R);
+                sw.WriteLine(colorPic[3].G);
+                sw.WriteLine(colorPic[3].B);
+                sw.WriteLine(colorPic[4].R);
+                sw.WriteLine(colorPic[4].G);
+                sw.WriteLine(colorPic[4].B);
+                sw.WriteLine(colorPic[5].R);
+                sw.WriteLine(colorPic[5].G);
+                sw.WriteLine(colorPic[5].B);
+
                 sw.Close();
             }
 
         }
 
-        //read the coordinate from the file
+        //read the value from the file
         //state load function
         private String[] ReadFromFile()
         {
@@ -382,19 +383,36 @@ namespace Assignment_1
                 ystart = Convert.ToDouble(set[1]);
                 xende = Convert.ToDouble(set[2]);
                 yende = Convert.ToDouble(set[3]);
-                x1 = Convert.ToInt32(set[4]);
-                y1 = Convert.ToInt32(set[5]);
-               xzoom = Convert.ToDouble(set[6]);
-                yzoom = Convert.ToDouble(set[7]);
+
+            // Color
+            colorPic[0] = Color.FromArgb(Convert.ToInt32(set[4]), Convert.ToInt32(set[5]), Convert.ToInt32(set[6]));
+            colorPic[1] = Color.FromArgb(Convert.ToInt32(set[7]), Convert.ToInt32(set[8]), Convert.ToInt32(set[9]));
+            colorPic[2] = Color.FromArgb(Convert.ToInt32(set[10]), Convert.ToInt32(set[11]), Convert.ToInt32(set[12]));
+            colorPic[3] = Color.FromArgb(Convert.ToInt32(set[13]), Convert.ToInt32(set[14]), Convert.ToInt32(set[15]));
+            colorPic[4] = Color.FromArgb(Convert.ToInt32(set[16]), Convert.ToInt32(set[17]), Convert.ToInt32(set[18]));
+            colorPic[5] = Color.FromArgb(Convert.ToInt32(set[19]), Convert.ToInt32(set[20]), Convert.ToInt32(set[21]));
+            xzoom = (xende - xstart) / (double)x1;
+            yzoom = (yende - ystart) / (double)y1;
             mandelbrot();
         }
 
         //color cycling function
         private void Color_Cycle(object sender, EventArgs e)
         {
-
+            timer1.Start();
         }
 
+        private void animateStopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            timer1.Stop();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            storeColor();
+            mandelbrot();
+            pictureBox.Refresh();
+        }
 
     }
 
