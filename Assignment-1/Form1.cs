@@ -161,8 +161,6 @@ namespace Assignment_1
                 update(g);     
         }
 
-
-
         private void pictureBox_MouseUp(object sender, MouseEventArgs e)
         {
             clicked = false;
@@ -266,7 +264,7 @@ namespace Assignment_1
             }
         }
 
-
+        //color change 
         private void changeColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             storeColor();
@@ -279,22 +277,18 @@ namespace Assignment_1
             //default
             if (!cndnColor)
             {
-                colorPic[0] = Color.FromArgb(255, 255, 255);
-                colorPic[1] = Color.FromArgb(255, 255, 255);
-                colorPic[2] = Color.FromArgb(255, 255, 255);
-                colorPic[3] = Color.FromArgb(255, 255, 255);
-                colorPic[4] = Color.FromArgb(255, 255, 255);
-                colorPic[5] = Color.FromArgb(255, 255, 255);
+                for (int i=0; i<colorPic.Length; i++) {
+                    colorPic[i] = Color.FromArgb(255, 255, 255);
+                }
+               
                 cndnColor = true;
             }
             else
             {
-                colorPic[0] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
-                colorPic[1] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
-                colorPic[2] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
-                colorPic[3] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
-                colorPic[4] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
-                colorPic[5] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
+                for (int j = 0; j < colorPic.Length; j++)
+                {
+                    colorPic[j] = Color.FromArgb(rn.Next(255), rn.Next(255), rn.Next(255));
+                }
             }
         
             }
@@ -318,25 +312,13 @@ namespace Assignment_1
                 sw.WriteLine(ystart);
                 sw.WriteLine(xende);
                 sw.WriteLine(yende);
-                sw.WriteLine(colorPic[0].R);
-                sw.WriteLine(colorPic[0].G);
-                sw.WriteLine(colorPic[0].B);
-                sw.WriteLine(colorPic[1].R);
-                sw.WriteLine(colorPic[1].G);
-                sw.WriteLine(colorPic[1].B);
-                sw.WriteLine(colorPic[2].R);
-                sw.WriteLine(colorPic[2].G);
-                sw.WriteLine(colorPic[2].B);
-                sw.WriteLine(colorPic[3].R);
-                sw.WriteLine(colorPic[3].G);
-                sw.WriteLine(colorPic[3].B);
-                sw.WriteLine(colorPic[4].R);
-                sw.WriteLine(colorPic[4].G);
-                sw.WriteLine(colorPic[4].B);
-                sw.WriteLine(colorPic[5].R);
-                sw.WriteLine(colorPic[5].G);
-                sw.WriteLine(colorPic[5].B);
 
+                for (int k = 0; k < colorPic.Length; k++)
+                {
+                    sw.WriteLine(colorPic[k].R);
+                    sw.WriteLine(colorPic[k].G);
+                    sw.WriteLine(colorPic[k].B);
+                }
                 sw.Close();
             }
 
@@ -385,12 +367,13 @@ namespace Assignment_1
                 yende = Convert.ToDouble(set[3]);
 
             // Color
-            colorPic[0] = Color.FromArgb(Convert.ToInt32(set[4]), Convert.ToInt32(set[5]), Convert.ToInt32(set[6]));
-            colorPic[1] = Color.FromArgb(Convert.ToInt32(set[7]), Convert.ToInt32(set[8]), Convert.ToInt32(set[9]));
-            colorPic[2] = Color.FromArgb(Convert.ToInt32(set[10]), Convert.ToInt32(set[11]), Convert.ToInt32(set[12]));
-            colorPic[3] = Color.FromArgb(Convert.ToInt32(set[13]), Convert.ToInt32(set[14]), Convert.ToInt32(set[15]));
-            colorPic[4] = Color.FromArgb(Convert.ToInt32(set[16]), Convert.ToInt32(set[17]), Convert.ToInt32(set[18]));
-            colorPic[5] = Color.FromArgb(Convert.ToInt32(set[19]), Convert.ToInt32(set[20]), Convert.ToInt32(set[21]));
+            int j = 4;
+            for (int l = 0; l < colorPic.Length; l++)
+            {
+                colorPic[l] = Color.FromArgb(Convert.ToInt32(set[j]), Convert.ToInt32(set[j+1]), Convert.ToInt32(set[j+2]));
+                j+=3;
+                
+            }
             xzoom = (xende - xstart) / (double)x1;
             yzoom = (yende - ystart) / (double)y1;
             mandelbrot();
@@ -413,6 +396,33 @@ namespace Assignment_1
             mandelbrot();
             pictureBox.Refresh();
         }
+
+        private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Configure the message box to be displayed
+            string messageBoxText = "-Select the area with mouse press to zoom in \n" +
+                "-Click on any area to zoom out \n" +
+                "-Save state to save the current status of picture \n" +
+                "-Load from a file to load the saved state of a picture \n" +
+                "-Start and stop animation submenu for color cycling \n" +
+                "-Exit submenu to quit from a form";
+            string caption = "About";
+
+            // Display message box
+            MessageBox.Show(messageBoxText, caption);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Configure the message box to be displayed
+            string messageBoxText = "-Developed and Programmed by Bibek Paudel";
+            string caption = "About";
+
+            // Display message box
+            MessageBox.Show(messageBoxText, caption);
+        }
+
+
 
     }
 
